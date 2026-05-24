@@ -14,6 +14,15 @@
             --red: #FF4500;
         }
 
+        body, html {
+            margin: 0; padding: 0;
+            width: 100%; height: 100%;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: var(--bg-teal);
+            overflow: hidden;
+            touch-action: manipulation;
+        }
+
         /* --- ЭКРАНЫ --- */
         .overlay {
             position: fixed;
@@ -167,30 +176,7 @@
         }
         input[type=range] { width: 100%; cursor: pointer; accent-color: var(--accent-orange); }
 
-        body, html {
-            margin: 0; padding: 0;
-            width: 100%; height: 100%;
-            font-family: 'Segoe UI', sans-serif;
-            background-color: var(--bg-teal);
-            overflow: hidden;
-            touch-action: manipulation;
-        }
-
         /* --- ИГРОВОЙ ИНТЕРФЕЙС --- */
-        .studio-env {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(-45deg, #003333, #005555, #008080, #005555);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
-            z-index: 1;
-        }
-        .wooden-table {
-            position: fixed; bottom: 0; width: 100%; height: 25%;
-            background: linear-gradient(to bottom, #8B4513, #5D2E0B);
-            border-top: 8px solid #3d1f07;
-            z-index: 2;
-        }
-
         .game-wrapper {
             position: relative; z-index: 10;
             display: none; flex-direction: column; align-items: center;
@@ -211,13 +197,13 @@
             flex: 1; display: flex; flex-direction: column; gap: 10px;
             width: 100%; max-width: 480px; justify-content: center; align-items: center;
         }
-        @media (orientation: landscape) and (min-height: 350px) {
+        @media (orientation: landscape) {
             .playground { flex-direction: row; max-width: 950px; }
             .canvas-box { width: 48%; }
         }
 
         .canvas-box {
-            position: relative; width: 98%; aspect-ratio: 4/3;
+            position: relative; width: 98%; aspect-ratio: 16/9;
             background: #fff; border: 5px solid #3d1f07; border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5); overflow: hidden;
         }
@@ -228,15 +214,18 @@
             font-size: 13px; border-radius: 0 0 10px 10px; z-index: 100; font-weight: bold;
         }
 
-        .scene { width: 100%; height: 100%; position: relative; }
-        .obj {
-            position: absolute; user-select: none; display: flex; justify-content: center; align-items: center;
-            font-size: clamp(40px, 10vw, 60px); width: 80px; height: 80px; transform: translate(-50%, -50%);
+        .scene { 
+            width: 100%; height: 100%; 
+            position: relative; 
+            top: 0;
+            background-size: 100% 100%; 
+            background-position: center; 
+            background-repeat: no-repeat;
         }
 
         .diff-zone {
             position: absolute; cursor: pointer; z-index: 200; border-radius: 50%;
-            width: 90px; height: 90px; transform: translate(-50%, -50%);
+            width: 100px; height: 100px; transform: translate(-50%, -50%);
         }
 
         .marker {
@@ -271,7 +260,7 @@
         <div class="settings-btn" onclick="openSettings()">⚙️</div>
         <div id="menu-decor-container"></div>
         <div class="menu-card">
-            <h1 class="game-logo">ГДЕ ОТЛИЧИЕ?</h1>
+            <h1 class="game-logo">АРТ КВЕСТ</h1>
             <p style="margin:5px 0 20px 0; font-weight:900; color:#555; font-size: 16px; letter-spacing: 2px;">МАСТЕРСКАЯ ХУДОЖНИКА</p>
             <button class="btn-large" onclick="openLevelMenu()">ИГРАТЬ</button>
         </div>
@@ -291,7 +280,7 @@
                     <span>🔇</span><span>🔊</span>
                 </div>
             </div>
-            <button class="btn-large btn-small" style="margin-top:20px;" onclick="closeSettings()">ГОТОВО</button>
+            <button class="btn-large" style="margin-top:20px; font-size: 16px; padding: 10px 30px;" onclick="closeSettings()">ГОТОВО</button>
         </div>
     </div>
 
@@ -309,7 +298,7 @@
         <div class="menu-card">
             <h1 style="color:var(--accent-purple); margin:0; font-size: 42px;">УСПЕХ!</h1>
             <p id="victory-time" style="margin:10px 0; font-size: 20px; font-weight: bold;"></p>
-            <div class="stars-container" id="victory-stars">⭐⭐⭐</div>
+            <div class="stars-container" id="victory-stars" style="color: var(--accent-yellow); font-size: 30px; margin: 10px 0;">⭐⭐⭐</div>
             <div style="display:flex; flex-direction:column; gap: 10px;">
                 <button class="btn-large" id="next-lvl-btn" onclick="nextLevel()">ДАЛЕЕ</button>
                 <button class="btn-large btn-blue-large" onclick="resetCurrentLevel()">ПОВТОРИТЬ</button>
@@ -320,12 +309,8 @@
 
     <!-- ЭКРАН ЗАГРУЗКИ -->
     <div id="loader" class="overlay">
-        <div class="loader-icon" id="ov-icon">🎨</div>
+        <div style="font-size: 50px;" id="ov-icon">🎨</div>
         <div style="color:white; font-weight:bold; margin-top:20px; font-size: 20px; letter-spacing: 2px;" id="ov-text">ЗАГРУЗКА...</div>
-    </div>
-
-    <div class="studio-env">
-        <div class="wooden-table"></div>
     </div>
 
     <div class="game-wrapper" id="game-ui">
@@ -334,7 +319,7 @@
                 <span id="lvl-info" style="color:var(--accent-purple); font-size: 18px;">УРОВЕНЬ 1</span>
                 <span class="timer">⏱️ <span id="timer-val">00:00</span></span>
             </div>
-            <div style="font-weight:900; font-size:22px; color:var(--accent-orange);">НАЙДЕНО: <span id="score">0</span> / 5</div>
+            <div style="font-weight:900; font-size:22px; color:var(--accent-orange);">НАЙДЕНО: <span id="score">0</span> / <span id="max-score">5</span></div>
         </div>
 
         <div class="playground">
@@ -402,13 +387,11 @@
         }
 
         const levels = [
-            { id: 0, name: "Летний День", icon: "🌿", bg: "linear-gradient(to bottom, #87CEEB 60%, #4CAF50 60%)", diffs: [{ id: 1, x: '85%', y: '15%', orig: '☀️', copy: '🌤️' }, { id: 2, x: '15%', y: '65%', orig: '🏠', copy: '🏚️' }, { id: 3, x: '80%', y: '70%', orig: '🌳', copy: '🍂' }, { id: 4, x: '45%', y: '90%', orig: '🚗', copy: '🚙' }, { id: 5, x: '25%', y: '85%', orig: '🌻', copy: '🌷' }], static: [{ x: '20%', y: '10%', icon: '☁️' }, { x: '90%', y: '95%', icon: '🌱' }, { x: '40%', y: '40%', icon: '🦋' }] },
-            { id: 1, name: "Морской Пляж", icon: "🏝️", bg: "linear-gradient(to bottom, #4facfe 50%, #f6d365 50%)", diffs: [{ id: 1, x: '15%', y: '65%', orig: '🌴', copy: '🌵' }, { id: 2, x: '80%', y: '88%', orig: '🦀', copy: '🦞' }, { id: 3, x: '45%', y: '40%', orig: '⛵', copy: '🛶' }, { id: 4, x: '80%', y: '10%', orig: '☁️', copy: '🚁' }, { id: 5, x: '50%', y: '94%', orig: '🐚', copy: '✨' }], static: [{ x: '10%', y: '10%', icon: '☀️' }, { x: '35%', y: '90%', icon: '🏐' }, { x: '90%', y: '60%', icon: '🏖️' }] },
-            { id: 2, name: "Ночная Сказка", icon: "🌙", bg: "linear-gradient(to bottom, #0f0c29 0%, #302b63 50%, #24243e 100%)", diffs: [{ id: 1, x: '15%', y: '15%', orig: '🌙', copy: '🌕' }, { id: 2, x: '75%', y: '45%', orig: '🦉', copy: '🦇' }, { id: 3, x: '45%', y: '90%', orig: '🔥', copy: '⛺' }, { id: 4, x: '60%', y: '25%', orig: '⭐', copy: '☄️' }, { id: 5, x: '10%', y: '70%', orig: '🏰', copy: '🏚️' }], static: [{ x: '90%', y: '10%', icon: '☁️' }, { x: '95%', y: '95%', icon: '🐈' }, { x: '30%', y: '85%', icon: '🌳' }] },
+            { id: 0, name: "Рыцарь: Закат", icon: "🪖", bg: "url('оригинал 1 уровня.png')", copyBg: "url('копия 1 уровня.png')", diffs: [{ id: 1, x: '86%', y: '32%', r: 150 }, { id: 2, x: '50%', y: '22%' }, { id: 3, x: '13%', y: '60%' }] },
+            { id: 1, name: "Катакомбы: Орден", icon: "💀", bg: "url('level2_original.png')", copyBg: "url('level2_diff.png')", diffs: [{ id: 1, x: '80%', y: '88%' }, { id: 2, x: '50%', y: '50%' }, { id: 3, x: '63%', y: '48%' }, { id: 5, x: '15%', y: '86%' }, { id: 6, x: '92%', y: '48%' }] },
+            { id: 2, name: "Древний Склеп", icon: "📜", bg: "url('level3_original.png')", copyBg: "url('level3_diff.png')", diffs: [{ id: 1, x: '10%', y: '45%' }, { id: 2, x: '88%', y: '63%' }, { id: 3, x: '40%', y: '20%' }, { id: 4, x: '32%', y: '35%' }, { id: 5, x: '17%', y: '85%' }] },
             { id: 3, name: "Зимний Лес", icon: "❄️", bg: "linear-gradient(to bottom, #e0f2f1 70%, #ffffff 70%)", diffs: [{ id: 1, x: '85%', y: '15%', orig: '☀️', copy: '❄️' }, { id: 2, x: '20%', y: '75%', orig: '🌲', copy: '⛄' }, { id: 3, x: '80%', y: '80%', orig: '🛖', copy: '🏰' }, { id: 4, x: '50%', y: '45%', orig: '🐦', copy: '🐧' }, { id: 5, x: '45%', y: '90%', orig: '🐇', copy: '🦌' }], static: [{ x: '30%', y: '15%', icon: '☁️' }, { x: '70%', y: '20%', icon: '🌨️' }, { x: '10%', y: '90%', icon: '🪵' }] },
-            { id: 4, name: "Космос", icon: "🚀", bg: "linear-gradient(to bottom, #000000, #2c3e50)", diffs: [{ id: 1, x: '15%', y: '20%', orig: '🌍', copy: '🪐' }, { id: 2, x: '85%', y: '85%', orig: '👨‍🚀', copy: '👽' }, { id: 3, x: '50%', y: '55%', orig: '🚀', copy: '🛸' }, { id: 4, x: '80%', y: '25%', orig: '⭐', copy: '☄️' }, { id: 5, x: '20%', y: '80%', orig: '🛰️', copy: '🔭' }], static: [{ x: '50%', y: '10%', icon: '🌌' }, { x: '90%', y: '50%', icon: '✨' }, { x: '10%', y: '50%', icon: '🌠' }] },
-            { id: 5, name: "Подводный мир", icon: "🐠", bg: "linear-gradient(to bottom, #00d2ff 0%, #3a7bd5 100%)", diffs: [{ id: 1, x: '15%', y: '75%', orig: '🪸', copy: '🌿' }, { id: 2, x: '80%', y: '20%', orig: '🐠', copy: '🐡' }, { id: 3, x: '45%', y: '88%', orig: '⚓', copy: '🗝️' }, { id: 4, x: '25%', y: '15%', orig: '🫧', copy: '✨' }, { id: 5, x: '75%', y: '80%', orig: '💰', copy: '💎' }], static: [{ x: '50%', y: '10%', icon: '🌊' }, { x: '10%', y: '40%', icon: '🐙' }, { x: '90%', y: '70%', icon: '🐚' }] },
-            { id: 6, name: "Древний Египет", icon: "🏜️", bg: "linear-gradient(to bottom, #f1c40f 40%, #e67e22 40%)", diffs: [{ id: 1, x: '50%', y: '45%', orig: '🛖', copy: '⛰️' }, { id: 2, x: '20%', y: '85%', orig: '🐫', copy: '🐎' }, { id: 3, x: '85%', y: '15%', orig: '☀️', copy: '🌙' }, { id: 4, x: '75%', y: '90%', orig: '🐍', copy: '🦎' }, { id: 5, x: '12%', y: '25%', orig: '🌴', copy: '🌵' }], static: [{ x: '90%', y: '60%', icon: '🦅' }, { x: '35%', y: '92%', icon: '🦂' }, { x: '10%', y: '10%', icon: '☁️' }] }
+            { id: 4, name: "Космос", icon: "🚀", bg: "linear-gradient(to bottom, #000000, #2c3e50)", diffs: [{ id: 1, x: '15%', y: '20%', orig: '🌍', copy: '🪐' }, { id: 2, x: '85%', y: '85%', orig: '👨‍🚀', copy: '👽' }, { id: 3, x: '50%', y: '55%', orig: '🚀', copy: '🛸' }, { id: 4, x: '80%', y: '25%', orig: '⭐', copy: '☄️' }, { id: 5, x: '20%', y: '80%', orig: '🛰️', copy: '🔭' }], static: [{ x: '50%', y: '10%', icon: '🌌' }, { x: '90%', y: '50%', icon: '✨' }, { x: '10%', y: '50%', icon: '🌠' }] }
         ];
 
         let curLvlIdx = 0; let score = 0; let hintsLeft = 3; let foundIds = new Set();
@@ -457,85 +440,48 @@
         function loadLevel(idx) {
             const loader = document.getElementById('loader'), lvl = levels[idx];
             loader.style.opacity = 1; loader.style.visibility = 'visible';
-            document.getElementById('ov-icon').innerText = lvl.icon; document.getElementById('ov-text').innerText = `РИСУЕМ...`;
             setTimeout(() => {
                 score = 0; foundIds.clear();
-                document.getElementById('score').innerText = '0'; document.getElementById('lvl-info').innerText = `УРОВЕНЬ ${idx + 1}`;
+                document.getElementById('score').innerText = '0'; document.getElementById('max-score').innerText = lvl.diffs.length;
                 const o = document.getElementById('scene-orig'), c = document.getElementById('scene-copy');
-                o.style.backgroundImage = c.style.backgroundImage = lvl.bg; o.innerHTML = c.innerHTML = '';
+                o.style.backgroundImage = lvl.bg;
+                c.style.backgroundImage = lvl.copyBg || lvl.bg;
+                o.innerHTML = c.innerHTML = '';
                 lvl.diffs.forEach(d => {
-                    o.appendChild(createEl(d.orig, d.x, d.y)); c.appendChild(createEl(d.copy, d.x, d.y));
                     const m = document.createElement('div'); m.className='marker'; m.id=`m-${d.id}`; m.style.left=d.x; m.style.top=d.y; c.appendChild(m);
-                    const z = document.createElement('div'); z.className='diff-zone'; z.style.left=d.x; z.style.top=d.y; z.onclick=(e)=>{e.stopPropagation(); handleFound(d.id, e);}; c.appendChild(z);
+                    const z = document.createElement('div'); z.className='diff-zone'; z.style.left=d.x; z.style.top=d.y; if(d.r) { z.style.width = z.style.height = d.r + 'px'; }
+                    z.onclick=(e)=>{e.stopPropagation(); handleFound(d.id, e);}; c.appendChild(z);
                 });
-                lvl.static.forEach(s => { const elO=createEl(s.icon, s.x, s.y), elC=createEl(s.icon, s.x, s.y); elO.onclick=elC.onclick=(e)=>{e.stopPropagation(); handleWrongClick();}; o.appendChild(elO); c.appendChild(elC); });
                 document.getElementById('hint-btn').innerText = `ПОМОЩЬ (3)`; document.getElementById('hint-btn').disabled = false;
                 setTimeout(() => { loader.style.opacity = 0; setTimeout(() => loader.style.visibility = 'hidden', 500); }, 600);
             }, 600);
-        }
-
-        function createEl(t, x, y) { const d = document.createElement('div'); d.className = 'obj'; d.innerText = t; d.style.left = x; d.style.top = y; return d; }
-        
-        function spawnSparks(x, y) {
-            confetti({
-                particleCount: 15,
-                spread: 30,
-                origin: { x: x / window.innerWidth, y: y / window.innerHeight },
-                colors: ['#FFD700', '#FFA500', '#ffffff'],
-                startVelocity: 20,
-                gravity: 0.5,
-                scalar: 0.7,
-                zIndex: 1000
-            });
         }
 
         function handleFound(id, event) {
             if (foundIds.has(id)) return;
             foundIds.add(id); score++; 
             playFaded(audio.success, masterVol, 800);
-            
-            // Эффект искр из-под клика
-            if (event) spawnSparks(event.clientX, event.clientY);
-            else {
-                // Если подсказка - искры в центре объекта
-                const rect = document.getElementById(`m-${id}`).getBoundingClientRect();
-                spawnSparks(rect.left + rect.width/2, rect.top + rect.height/2);
-            }
-
             document.getElementById('score').innerText = score; document.getElementById(`m-${id}`).style.display = 'block';
-            if (score === 5) setTimeout(showVictory, 800);
+            if (score === levels[curLvlIdx].diffs.length) setTimeout(showVictory, 800);
         }
 
         function showVictory() {
             clearInterval(timerInt);
-            let s = 1; if (totalSec <= 7) s = 3; else if (totalSec <= 14) s = 2;
+            let s = 1; if (totalSec <= 15) s = 3; else if (totalSec <= 30) s = 2;
             if (!progress[curLvlIdx] || s > progress[curLvlIdx]) { progress[curLvlIdx] = s; localStorage.setItem('artQuestStars', JSON.stringify(progress)); }
             if (!bestTimes[curLvlIdx] || totalSec < bestTimes[curLvlIdx]) { bestTimes[curLvlIdx] = totalSec; localStorage.setItem('artQuestBestTimes', JSON.stringify(bestTimes)); }
-            
             document.getElementById('victory-time').innerText = `Время: ${totalSec} сек`;
             document.getElementById('victory-stars').innerText = '⭐'.repeat(s) + '☆'.repeat(3-s);
             document.getElementById('next-lvl-btn').style.display = (curLvlIdx < levels.length - 1) ? 'block' : 'none';
-            
             document.getElementById('victory-screen').style.visibility = 'visible'; document.getElementById('victory-screen').style.opacity = 1;
-            
-            // Праздничный салют из двух углов
-            const count = 200 + (s * 50);
-            const fire = (particleRatio, opts) => {
-                confetti({ particleCount: Math.floor(count * particleRatio), origin: { y: 0.7 }, colors: ['#FF8C00', '#9370DB', '#FFD700', '#ffffff'], zIndex: 12000, ...opts });
-            };
-            fire(0.25, { spread: 26, startVelocity: 55, origin: { x: 0.2, y: 0.6 } });
-            fire(0.2, { spread: 60, origin: { x: 0.2, y: 0.6 } });
-            fire(0.35, { spread: 100, decay: 0.91, scalar: 0.8, origin: { x: 0.5, y: 0.7 } });
-            fire(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2, origin: { x: 0.5, y: 0.7 } });
-            fire(0.25, { spread: 26, startVelocity: 55, origin: { x: 0.8, y: 0.6 } });
-            fire(0.2, { spread: 60, origin: { x: 0.8, y: 0.6 } });
-
+            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
             audio.victory.volume = masterVol; audio.victory.play().catch(()=>{});
         }
 
         function nextLevel() { startLevel(curLvlIdx + 1); }
-        function useHint() { if (hintsLeft > 0) { const u = levels[curLvlIdx].diffs.find(o => !foundIds.has(o.id)); if (u) { hintsLeft--; document.getElementById('hint-btn').innerText=`ПОМОЩЬ (${hintsLeft})`; if(hintsLeft===0)document.getElementById('hint-btn').disabled=true; handleFound(u.id); } } }
         function resetCurrentLevel() { startLevel(curLvlIdx); }
+        function useHint() { if (hintsLeft > 0) { const u = levels[curLvlIdx].diffs.find(o => !foundIds.has(o.id)); if (u) { hintsLeft--; document.getElementById('hint-btn').innerText=`ПОМОЩЬ (${hintsLeft})`; if(hintsLeft===0)document.getElementById('hint-btn').disabled=true; handleFound(u.id); } } }
+        
         function createMenuDecor() {
             const container = document.getElementById('menu-decor-container');
             const icons = ['🎨', '🖌️', '🌈', '✨', '⭐', '🎈', '🖍️', '🖼️'];
@@ -546,7 +492,7 @@
                 container.appendChild(el);
             }
         }
-        window.onload = () => { createMenuDecor(); };
+        window.onload = () => { createMenuDecor(); showMenu(); };
     </script>
 </body>
 </html>
